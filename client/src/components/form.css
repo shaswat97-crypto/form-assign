@@ -1,0 +1,62 @@
+form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 0px 0px 200px;
+    flex-direction: column;
+}
+input, select{
+    height: 20px;
+    color: rgba(128, 128, 128, 0.788);
+    border: solid 1px rgba(128, 128, 128, 0.788);
+    border-radius: 3px;
+}
+input::placeholder{
+    color: rgba(128, 128, 128, 0.788);
+
+}
+input{
+    color: black;
+}
+select{
+    height: 23px;
+}
+h1{
+    font-size: 19px;
+    text-decoration: underline;
+}
+label{
+    display: block;
+    width: 70px;
+}
+.dcont{
+    display: flex;
+    /* flex-wrap: wrap; */
+    gap: 20px;
+}
+.lc{
+    display: flex;
+    margin-bottom: 20px;
+}
+.guardcont{
+    display: flex;
+    /* flex-direction: column; */
+}
+.name-mob{
+    width: 500px;
+    margin-right: 10px;
+}
+.dcont .rest{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.ac{
+    display: flex;
+}
+label{
+    font-size: 14.5px;
+}
+span{
+    color: red;
+}
