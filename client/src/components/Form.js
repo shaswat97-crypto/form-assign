@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import "./form.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { statesOfIndia } from "./data";
+import { citiesOfUP } from "./data";
+
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
-  age: yup.number().required("Age is required"),
+  age: yup.string().required("Age is required"),
   sex: yup.string().required("Sex is required"),
-  mobile: yup.string().matches(/^[6-9]\d{9}$/, "Invalid Indian mobile number"),
-  emergencyContact: yup
-    .string()
-    .matches(/^[6-9]\d{9}$/, "Invalid Indian mobile number"),
   idType: yup.string(),
   govtId: yup.string().when("idType", (idType, schema) => {
     if (idType === "Aadhar") {
@@ -28,12 +29,27 @@ function Form() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const navTo = useNavigate();
+
+  const [countryState, setCountryState] = useState("India");
+
+  const handleClear = () => {
+    setCountryState("");
+  };
+
+  const onSubmit = async (data) => {
+    // axios.post()
+    console.log({ data }, { errors });
+    let res = await axios.post("/api/user", data);
+    let d = await res.data;
+    console.log(d);
+    reset();
+    navTo("/table");
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -44,7 +60,9 @@ function Form() {
             <div className="name-mob">
               <div className="label">
                 <div className="lc">
-                  <label>Name<span>*</span></label>
+                  <label>
+                    Name<span>*</span>
+                  </label>
                   <input
                     placeholder="Enter Name"
                     style={{ width: "400px" }}
@@ -61,8 +79,10 @@ function Form() {
                   <input
                     placeholder="Enter Mobile"
                     style={{ width: "300px" }}
-                    type="text"
+                    type="number"
                     {...register("mobile")}
+                    min={9000000000}
+                    max={9999999999}
                   />
                 </div>
                 {errors.mobile && <p>{errors.mobile.message}</p>}
@@ -87,7 +107,9 @@ function Form() {
 
               <div className="label">
                 <div className="lc">
-                  <label style={{ width: "50px" }}>Sex<span>*</span></label>
+                  <label style={{ width: "50px" }}>
+                    Sex<span>*</span>
+                  </label>
                   <select style={{ width: "140px" }} {...register("sex")}>
                     <option value="">Enter sex</option>
                     <option value="Male">Male</option>
@@ -180,70 +202,72 @@ function Form() {
         <div className="adetails">
           <h1>Address Details</h1>
           <div className="ac">
-          <div className="name-mob">
-            <div className="label">
-              <div className="lc">
-                <label>Address:</label>
-                <input
-                  placeholder="Enter Address"
-                  style={{ width: "390px" }}
-                  type="text"
-                  {...register("Address")}
-                />
-              </div>
-              {errors.Address && <p>{errors.Address.message}</p>}
-            </div>
-
-            <div className="label">
-              <div className="lc">
-                <label>Country</label>
-                <input
-                  value={"India"}
-                  style={{ width: "270px" }}
-                  type="text"
-                  {...register("Country")}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="dcont">
-            <div className="pincode">
+            <div className="name-mob">
               <div className="label">
                 <div className="lc">
-                  <label>State</label>
-                  <select style={{ width: "250px" }} {...register("State")}>
-                    <option value="">Enter state</option>
-                    <option value="Aadhar">Aadhar</option>
-                  </select>
+                  <label>Address:</label>
+                  <input
+                    placeholder="Enter Address"
+                    style={{ width: "390px" }}
+                    type="text"
+                    {...register("address")}
+                  />
                 </div>
               </div>
 
               <div className="label">
                 <div className="lc">
-                  <label>Pincode</label>
+                  <label>Country</label>
                   <input
-                    placeholder="Enter pincode"
-                    style={{ width: "200px" }}
+                    value={"India"}
+                    style={{ width: "270px" }}
                     type="text"
-                    {...register("Pincode")}
+                    {...register("country")}
                   />
                 </div>
               </div>
             </div>
+            <div className="dcont">
+              <div className="pincode">
+                <div className="label">
+                  <div className="lc">
+                    <label>State</label>
+                    <select style={{ width: "250px" }} {...register("state")}>
+                      <option value="">Enter state</option>
+                      {statesOfIndia.map((state) => (
+                        <option value={state}>{state}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
 
-            <div className="city">
-              <div className="label">
-                <div className="lc">
-                  <label>City</label>
-                  <select style={{ width: "220px" }} {...register("City")}>
-                    <option value="">Enter city/town/village</option>
-                    <option value="Aadhar">Aadhar</option>
-                    <option value="PAN">PAN</option>
-                  </select>
+                <div className="label">
+                  <div className="lc">
+                    <label>Pincode</label>
+                    <input
+                      placeholder="Enter pincode"
+                      style={{ width: "200px" }}
+                      type="text"
+                      {...register("pincode")}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="city">
+                <div className="label">
+                  <div className="lc">
+                    <label>City</label>
+                    <select style={{ width: "220px" }} {...register("city")}>
+                      <option value="">Enter city/town/village</option>
+                      {citiesOfUP.map((city) => (
+                        <option value={city}>{city}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
           </div>
         </div>
 
@@ -258,7 +282,7 @@ function Form() {
                     placeholder="Enter occupation"
                     style={{ width: "220px" }}
                     type="text"
-                    {...register("Occupation")}
+                    {...register("occupation")}
                   />
                 </div>
               </div>
@@ -267,11 +291,19 @@ function Form() {
                 <div className="lc">
                   <label style={{ width: "100px" }}>Nationality</label>
                   <input
-                    value={"India"}
-                    style={{ width: "220px" }}
+                    value={countryState}
+                    style={{
+                      outline: "none",
+                      width: "200px",
+                      borderRight: "none",
+                      borderRadius: "0px",
+                    }}
                     type="text"
-                    {...register("Nationality")}
+                    {...register("nationality")}
                   />
+                  <div onClick={handleClear} className="x">
+                    X
+                  </div>
                 </div>
               </div>
             </div>
@@ -280,7 +312,7 @@ function Form() {
               <div className="label">
                 <div className="lc">
                   <label>Religion</label>
-                  <select style={{ width: "180px" }} {...register("Religion")}>
+                  <select style={{ width: "180px" }} {...register("religion")}>
                     <option value="">Enter Religion</option>
                     <option value="Aadhar">Aadhar</option>
                     <option value="PAN">PAN</option>
@@ -291,7 +323,10 @@ function Form() {
               <div className="label">
                 <div className="lc">
                   <label style={{ width: "130px" }}>Maritial Status</label>
-                  <select style={{ width: "220px" }} {...register("Maritial")}>
+                  <select
+                    style={{ width: "220px" }}
+                    {...register("martitalStatus")}
+                  >
                     <option value="">Enter Maritial Status</option>
                     <option value="Aadhar">Aadhar</option>
                     <option value="PAN">PAN</option>
@@ -302,7 +337,7 @@ function Form() {
               <div className="label">
                 <div className="lc">
                   <label style={{ width: "110px" }}>Blood Group</label>
-                  <select style={{ width: "80px" }} {...register("Group")}>
+                  <select style={{ width: "80px" }} {...register("bloodGroup")}>
                     <option value="">Group</option>
                     <option value="Aadhar">Aadhar</option>
                     <option value="PAN">PAN</option>
@@ -314,7 +349,16 @@ function Form() {
         </div>
       </div>
 
-      <button type="submit">Submit</button>
+      <div className="btncont">
+        <button className="cancel" onClick={(e) => e.preventDefault}>
+          Cancel
+          <p>(ESC)</p>
+        </button>
+        <button className="submit" type="submit">
+          Submit
+          <p>(Ctrl S)</p>
+        </button>
+      </div>
     </form>
   );
 }

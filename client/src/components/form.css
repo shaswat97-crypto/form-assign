@@ -60,3 +60,48 @@ label{
 span{
     color: red;
 }
+.x{
+    border: solid rgba(128, 128, 128, 0.788) 1px;
+    border-left: none;
+    padding-right: 10px;
+    cursor: pointer;
+}
+.submit{
+    background-color: #2f7d32;
+    border: none;
+    color: aliceblue;
+    padding: 10px 40px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    cursor: pointer;
+
+}
+
+.cancel{
+ 
+        background-color: aliceblue;
+        border: solid red 1px;
+        padding: 10px 40px;
+        border-radius: 5px;
+        text-transform: uppercase;
+        color: red;
+        cursor: pointer;
+    
+}
+
+.btncont{
+    width: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 50px;
+    margin-left: 43%;
+}
+
+.btncont p{
+    margin: 0;
+    padding: 0;
+    padding-top: 5px;
+    text-transform: uppercase;
+    text-decoration: underline;
+}
